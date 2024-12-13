@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import { ItemWrapper, TagWrapper } from "@components/atoms/Wrapper";
 import Text, { ThemeText } from "@components/atoms/Text";
@@ -53,8 +52,9 @@ const ItemGatheringWrapper = styled.div`
 
 /**
  * Recruitment List Item
- * highlight: 추천 공고 시 지정
- * isActiveStar: 즐겨찾기 활성화 여부
+ *
+ * highlight: 추천 공고 시 지정 |
+ * isActiveStar: 즐겨찾기 활성화 여부 |
  * isRecruit: 즐겨찾기 버튼 표시 여부
  * @param title string (title)
  * @param category string (category)

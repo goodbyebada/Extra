@@ -8,6 +8,7 @@ interface StatusTagProps {
 
 /**
  * Status Tag
+ *
  * status로 지정된 상태에 따른 디자인 적용
  * @param status "applied" | "rejected" | "approved" (status)
  * @param statusText string (status text)
