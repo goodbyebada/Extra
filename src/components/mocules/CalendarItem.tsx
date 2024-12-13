@@ -34,7 +34,8 @@ const CounterWrapper = styled.div`
 
 /**
  * Recruitment Calendar Item
- * count: 공고 갯수
+ *
+ * count: 공고 갯수 |
  * highlight: 추천 공고 여부
  * @param count number (the number of recruitment)
  * @param highlight boolean (specify when posting a recommendation)
