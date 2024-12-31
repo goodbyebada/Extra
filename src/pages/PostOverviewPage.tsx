@@ -8,7 +8,7 @@ import { LabeledCheckBoxGroup } from "@components/mocules/LabeledCheckBoxGroup";
 import InfiniteScrollingTemplate from "@components/mocules/InfiniteScrolling";
 import { ItemProps } from "@components/mocules/Item";
 import Text, { ThemeText } from "@components/atoms/Text";
-import { LineWrapper } from "@components/atoms/Wrapper";
+import { ContentWrapper, LineWrapper } from "@components/atoms/Wrapper";
 
 /**
  * 업체 측 공고 화면
@@ -16,7 +16,7 @@ import { LineWrapper } from "@components/atoms/Wrapper";
  */
 
 // [ ] 12.30 api 호출시에 loading 화면 띄우기
-export default function PostOverviewPage() {
+export default function PostOverViewPage() {
   const navigate = useNavigate();
 
   const OPTION_STR = {
@@ -125,7 +125,7 @@ export default function PostOverviewPage() {
         </Header>
       </StickyWrapper>
 
-      <ContentWrapper>
+      <ContentWrapper marginTop="8rem">
         <InfiniteScrollingTemplate
           baseURL={url} // 동적으로 URL 전달
           query={query}
@@ -150,8 +150,4 @@ const StickyWrapper = styled.div`
   width: 100%;
   position: fixed;
   top: 0;
-`;
-
-const ContentWrapper = styled.div`
-  margin-top: 10rem;
 `;
