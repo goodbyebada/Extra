@@ -9,6 +9,7 @@ export {
   dummyJobPostList,
   dummyCalenderDataForCompany,
   dummyUserRoleData,
+  dummyUserClothes,
 };
 
 const memberRoleServerDummyList: MemberRoleServer[] = [
@@ -420,5 +421,65 @@ const dummyUserRoleData = [
     category: "UMC 영화",
     role: "조연 역할",
     imageUrl: "https://via.placeholder.com/100",
+  },
+];
+
+/**
+ * 업체 사용자 의상 컨펌 (임시)
+ */
+const dummyUserClothes = [
+  {
+    userId: "1",
+    name: "홍길동",
+    imageUrl: "https://via.placeholder.com/100",
+    clothesNum: 4,
+    clothes: [
+      {
+        id: 1,
+        src: "https://via.placeholder.com/150/FFFFFF?text=1",
+        description: "의상 1",
+      },
+      {
+        id: 2,
+        src: "https://via.placeholder.com/150/FFFFFF?text=2",
+        description: "의상 2",
+      },
+      {
+        id: 3,
+        src: "https://via.placeholder.com/150/FFFFFF?text=3",
+        description: "의상 3",
+      },
+      {
+        id: 4,
+        src: "https://via.placeholder.com/150/FFFFFF?text=4",
+        description: "의상 4",
+      },
+    ],
+  },
+  {
+    userId: "2",
+    name: "김철수",
+    imageUrl: "https://via.placeholder.com/100",
+    clothesNum: 1,
+    clothes: [
+      {
+        id: 1,
+        src: "https://via.placeholder.com/150/FFFFFF?text=1",
+        description: "의상 1",
+      },
+    ],
+  },
+  {
+    userId: "3",
+    name: "이영희",
+    imageUrl: "https://via.placeholder.com/100",
+    clothesNum: 1,
+    clothes: [
+      {
+        id: 1,
+        src: "https://via.placeholder.com/150/FFFFFF?text=1",
+        description: "의상 1",
+      },
+    ],
   },
 ];
