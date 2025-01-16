@@ -40,18 +40,14 @@ function CompanyTitleCategoryModal({
   const [categoryList, setCategoryList] = useState(CategoryEnum);
 
   const isSubmitActive =
-    formState.title !== "" && formState.category[0] !== null;
+    formState.title.trim() !== "" && formState.category[0] !== null;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === "title") {
-      setFormState((prevState) => ({
-        ...prevState,
-        title: value,
-      }));
-    } else if (name === "categoryInput") {
-      setCategoryInput(value);
-    }
+    setFormState((prevState) => ({
+      ...prevState,
+      [name]: name === "categoryInput" ? value : value.trim(),
+    }));
   };
 
   const handlePlusClick = () => {
@@ -73,7 +69,7 @@ function CompanyTitleCategoryModal({
   };
 
   const handleSubmit = () => {
-    if (formState.title !== "" && formState.category[0] !== null) {
+    if (formState.title.trim() !== "" && formState.category[0] !== null) {
       onSubmit(formState.title, formState.category);
       closeModal();
     }

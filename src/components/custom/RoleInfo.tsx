@@ -13,21 +13,19 @@ interface RoleInfoProps {
  */
 
 const RoleInfo = ({ role, index, onClick }: RoleInfoProps) => {
+  const RoleDetailText = (label: string, value: string) => (
+    <Text size={14} weight={700}>
+      {label} : {value || "정보 없음"}
+    </Text>
+  );
+
   return (
     <RoleInfoContainer onClick={() => onClick(role.costume.roleName, index)}>
       <RoleDetail>
-        <Text size={14} weight={700}>
-          1. 성별 : {role.sex ? "여" : "남"}
-        </Text>
-        <Text size={14} weight={700}>
-          2. 나이 : {role.minAge} - {role.maxAge}
-        </Text>
-        <Text size={14} weight={700}>
-          3. 계절 : {role.costume.season}
-        </Text>
-        <Text size={14} weight={700}>
-          4. 의상 : {role.costume.etc}
-        </Text>
+        {RoleDetailText("1. 성별", role.sex ? "여" : "남")}
+        {RoleDetailText("2. 나이", `${role.minAge} - ${role.maxAge}`)}
+        {RoleDetailText("3. 계절", role.costume.season)}
+        {RoleDetailText("4. 의상", role.costume.etc)}
       </RoleDetail>
       <RolePersonnel>
         <Text size={16} weight={700} color="#fff">

@@ -388,7 +388,7 @@ const dummyUserRoleData = [
     name: "user1",
     category: "UMC 드라마",
     role: "학생 역할",
-    imageUrl: "https://via.placeholder.com/100",
+    imageUrl: "",
   },
   {
     id: 2,
@@ -396,7 +396,7 @@ const dummyUserRoleData = [
     name: "user2",
     category: "UMC 영화",
     role: "학생 역할",
-    imageUrl: "https://via.placeholder.com/100",
+    imageUrl: "",
   },
   {
     id: 3,
@@ -420,7 +420,7 @@ const dummyUserRoleData = [
     name: "user5",
     category: "UMC 영화",
     role: "조연 역할",
-    imageUrl: "https://via.placeholder.com/100",
+    imageUrl: "",
   },
 ];
 
