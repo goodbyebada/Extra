@@ -16,6 +16,11 @@ import NotFound from "@pages/Error/NotFound";
 import DateSelectedNoticeListForCom from "@pages/DateSelectedNoticeListForCom";
 import SchedulerPage from "@pages/Scheduler";
 import TempEvaluation from "@pages/TempEvaluation";
+import CompanyClothesMemberList from "@pages/CompanyClothesMemberList";
+import MemberClothesConfirm from "@pages/MemberClothesConfirm";
+import CompanyClothesApproval from "@pages/CompanyClothesApproval";
+import CompanyClothesConfirm from "@pages/CompanyClothesConfirm";
+import MemberClothesComment from "@pages/MemberClothesComment";
 
 import ThemePreviewPage from "@pages/ThemePreview";
 
@@ -64,6 +69,26 @@ function App() {
           />
           <Route path="/add-notice" element={<AddNotice />} />
           <Route path="/temp/:id" element={<TempEvaluation />} />
+          <Route
+            path="/member/clothes-confirm"
+            element={<MemberClothesConfirm />}
+          />
+          <Route
+            path="/member/clothes-comment"
+            element={<MemberClothesComment />}
+          />
+          <Route
+            path="/company/clothes-member"
+            element={<CompanyClothesMemberList />}
+          />
+          <Route
+            path="/company/clothes-approval"
+            element={<CompanyClothesApproval />}
+          />
+          <Route
+            path="/company/clothes-confirm"
+            element={<CompanyClothesConfirm />}
+          />
 
           <Route path="/*" element={<NotFound />} />
 
