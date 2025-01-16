@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Text from "@components/atoms/Text";
 import { MainButton } from "@components/atoms/Button";
@@ -12,9 +13,26 @@ import { handleImageUpload } from "@utills/imageUpload";
 
 const CompanyClothesUpload = () => {
   const [images, setImages] = useState<string[]>([]);
+  const [season, setSeason] = useState("");
+  const [etc, setEtc] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { roleName } = location.state || {};
 
   const onImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     handleImageUpload(event, setImages);
+  };
+
+  const handleSubmit = () => {
+    console.log({
+      roleName,
+      season,
+      etc,
+      imageSrc: images,
+    });
+
+    navigate(-1);
   };
 
   return (
@@ -23,19 +41,27 @@ const CompanyClothesUpload = () => {
         <Text size={16} align="left">
           역할
         </Text>
-        <Input />
+        <Input value={roleName} readOnly />
       </InfoWrapper>
       <InfoWrapper>
         <Text size={16} align="left">
           계절
         </Text>
-        <Input />
+        <Input
+          value={season}
+          onChange={(e) => setSeason(e.target.value)}
+          placeholder="계절을 입력하세요"
+        />
       </InfoWrapper>
       <InfoWrapper>
         <Text size={16} align="left">
           상세설명
         </Text>
-        <Input />
+        <Input
+          value={etc}
+          onChange={(e) => setEtc(e.target.value)}
+          placeholder="상세설명을 입력하세요"
+        />
       </InfoWrapper>
 
       <Text size={18} weight={700} align="left">
@@ -68,7 +94,7 @@ const CompanyClothesUpload = () => {
         />
       </AddImageButtonWrapper>
 
-      <MainButton>등록</MainButton>
+      <MainButton onClick={handleSubmit}>등록</MainButton>
     </Container>
   );
 };

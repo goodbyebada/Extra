@@ -9,6 +9,8 @@ interface ButtonProps {
   onClick?: () => void;
   isActive?: boolean;
   disabled?: boolean;
+  width?: string;
+  height?: string;
 }
 
 const StyledButton = styled.button`
@@ -29,6 +31,16 @@ const StyledMainButton = styled(StyledButton)<ButtonProps>`
   ${({ disabled }) => !disabled && "cursor: pointer;"}
 
   background: ${({ isActive }) => (isActive ? "#f5c001" : "#575757")};
+`;
+
+const StyledSubButton = styled(StyledButton)<ButtonProps>`
+  width: ${(props) => props.width || "100%"};
+  height: ${(props) => props.height || "45px"};
+  margin: 0 auto;
+  border-radius: 28px;
+  ${({ disabled }) => !disabled && "cursor: pointer;"}
+  background: ${({ isActive }) => (isActive ? "#f5c001" : "#575757")};
+  align-items: center;
 `;
 
 const StyledBoxButton = styled.div<{ isActive: boolean }>`
@@ -111,4 +123,39 @@ const BoxButton = ({ children, onClick, isActive = false }: ButtonProps) => {
   );
 };
 
-export { StarToggleButton, MainButton, BoxButton };
+/**
+ * Sub Submit Button
+ * isActive: 색 지정을 위한 props (비활성화 불가능)
+ * isActive: true => 테마 (#f5c001) 색
+ * isActive: false => 회색
+ * disabled: button 비활성화 여부
+ * 하위 컴포넌트에는 텍스트만 가능
+ * @param children string (button inner text)
+ * @param onClick () => void (onClick method)
+ * @param isActive boolean (button design type)
+ * @param disabled boolean (disabled status)
+ */
+const SubButton = ({
+  children,
+  onClick = () => {},
+  isActive = true,
+  disabled = false,
+  width,
+  height,
+}: ButtonProps) => {
+  return (
+    <StyledSubButton
+      isActive={isActive}
+      onClick={onClick}
+      disabled={disabled}
+      width={width}
+      height={height}
+    >
+      <Text size={16} color={isActive ? "#000" : "#adadad"} weight={700}>
+        {children}
+      </Text>
+    </StyledSubButton>
+  );
+};
+
+export { StarToggleButton, MainButton, BoxButton, SubButton };

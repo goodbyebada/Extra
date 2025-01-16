@@ -1,68 +1,46 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
-import { RoleRegister, SeasonEnum } from "@api/interface";
+import { RoleBodyType, Tattoo, TattooNames, Costume } from "@api/interface";
 import Modal from "@components/atoms/Modal";
-import { MainButton, BoxButton } from "@components/atoms/Button";
+import { MainButton, BoxButton, SubButton } from "@components/atoms/Button";
 import Text from "@components/atoms/Text";
 import TypeSelector from "@components/mocules/company/TypeSelectorButton";
+import CompanyClothesModal from "./CompanyClothesModal";
+
+interface CompanyRoleModalProps {
+  onSubmit: (role: RoleBodyType) => void;
+  closeModal: () => void;
+  isVisible: boolean;
+  role?: RoleBodyType | null;
+}
 
 /**
  * 관리자 공고 화면 역할 상세 프로필(역할 등록) 모달
  *
- * 수정할 것
- * 1. API 연결 시 역할 상세 프로필 등록과 수정 구분
- * 2. 데이터가 있다면 수정, 없다면 등록
- *
- * 역할 등록 === 역할 생성
- * roleBodyType으로 수정 부탁드립니다.
+ * role: 역할 정보(RoleBodyType)
  */
-
-interface CompanyRoleModalProps {
-  onSubmit: (role: RoleRegister) => void;
-  closeModal: () => void;
-  isVisible: boolean;
-}
-
-type TattooPart =
-  | "face"
-  | "chest"
-  | "arm"
-  | "leg"
-  | "shoulder"
-  | "back"
-  | "hand"
-  | "feet";
-
-type TattooNames = {
-  [key in TattooPart]: string;
-};
-
-const tattooNames: TattooNames = {
-  face: "얼굴",
-  chest: "가슴",
-  arm: "팔",
-  leg: "다리",
-  shoulder: "어깨",
-  back: "등",
-  hand: "손",
-  feet: "발",
-};
 
 function CompanyRoleModal({
   onSubmit,
   closeModal,
   isVisible,
+  role,
 }: CompanyRoleModalProps) {
-  const [formState, setFormState] = useState<RoleRegister>({
-    job_post_id: 1, // 임시, API 연결 시 수정
-    sex: true, // 남: true, 여: false
-    min_age: 0,
-    max_age: 0,
-    season: "SPRING",
-    costume: "",
-    etc: "",
-    limit_personnal: 0,
-    tattoo: {
+  const initialState: RoleBodyType = {
+    id: role?.id || Date.now(),
+    roleName: role?.roleName || "",
+    costume: role?.costume || {
+      roleName: "",
+      season: "",
+      etc: "",
+      imageSrc: [],
+    },
+    sex: role?.sex || true,
+    minAge: role?.minAge || "",
+    maxAge: role?.maxAge || "",
+    limitPersonnel: role?.limitPersonnel || 0,
+    currentPersonnel: role?.currentPersonnel || 0,
+    tattoo: role?.tattoo || {
       face: false,
       chest: false,
       arm: false,
@@ -72,23 +50,40 @@ function CompanyRoleModal({
       hand: false,
       feet: false,
     },
-  });
+  };
+  const [formState, setFormState] = useState<RoleBodyType>(initialState);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isClothesModalVisible, setIsClothesModalVisible] = useState(false);
+
+  const handleClothesSubmit = (costume: Costume) => {
+    setFormState((prev) => ({
+      ...prev,
+      costume,
+    }));
+    setIsClothesModalVisible(false);
+  };
+
+  useEffect(() => {
+    setFormState(role || initialState);
+  }, [role]);
+
+  useEffect(() => {
+    const { roleName, minAge, maxAge, limitPersonnel, costume } = formState;
+    setIsFormValid(
+      roleName.trim() !== "" &&
+        minAge.trim() !== "" &&
+        maxAge.trim() !== "" &&
+        limitPersonnel > 0 &&
+        costume.season.trim() !== "" &&
+        costume.etc.trim() !== "",
+    );
+  }, [formState]);
 
   const handleGenderSelect = (value: string) => {
     setFormState((prevState) => ({
       ...prevState,
       sex: value === "남",
     }));
-  };
-
-  const handleSeasonSelect = (value: string) => {
-    if (Object.values(SeasonEnum).includes(value as keyof typeof SeasonEnum)) {
-      setFormState((prevState) => ({
-        ...prevState,
-        season: value as keyof typeof SeasonEnum,
-      }));
-    }
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,151 +94,121 @@ function CompanyRoleModal({
     }));
   };
 
-  const handleTattooClick = (part: TattooPart) => {
-    setFormState((prevState) => {
-      const newTattoo = { ...prevState.tattoo };
-      newTattoo[part] = !newTattoo[part];
-      return {
-        ...prevState,
-        tattoo: newTattoo,
-      };
-    });
+  const handleTattooClick = (part: keyof Tattoo) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      tattoo: {
+        ...prevState.tattoo,
+        [part]: !prevState.tattoo[part],
+      },
+    }));
   };
 
   const handleSubmit = () => {
     if (isFormValid) {
       onSubmit(formState);
-      closeModal();
+      console.log(formState);
     }
   };
 
-  useEffect(() => {
-    const { min_age, max_age, costume, limit_personnal } = formState;
-    const isValid =
-      min_age > 0 && max_age > 0 && costume !== "" && limit_personnal > 0;
-    setIsFormValid(isValid);
-  }, [formState]);
+  const renderTattooRow = (startIndex: number, endIndex: number) => {
+    return (
+      <TattooRow>
+        {Object.keys(TattooNames)
+          .slice(startIndex, endIndex)
+          .map((part, index) => (
+            <BoxButton
+              key={index}
+              onClick={() => handleTattooClick(part as keyof Tattoo)}
+              isActive={formState.tattoo[part as keyof Tattoo]}
+            >
+              {TattooNames[part as keyof Tattoo]}
+            </BoxButton>
+          ))}
+      </TattooRow>
+    );
+  };
 
   return (
-    <Modal isVisible={isVisible} onClose={closeModal}>
-      <RoleBoxWrapper>
-        <Row>
-          <Text size={20} weight={900} color="#fff">
-            1.성별 :
-          </Text>
-          <TypeSelector
-            options={["남", "여"]}
-            selected={formState.sex ? "남" : "여"}
-            onSelect={handleGenderSelect}
-          />
-        </Row>
-        <Row>
-          <Text size={20} weight={900} color="#fff">
-            2.나이 :
-          </Text>
-          <NumInput
-            type="number"
-            name="min_age"
-            value={formState.min_age}
-            onChange={handleChange}
-          />
-          <AgeSeparator>~</AgeSeparator>
-          <NumInput
-            type="number"
-            name="max_age"
-            value={formState.max_age}
-            onChange={handleChange}
-          />
-        </Row>
-        <Row>
-          <Text size={20} weight={900} color="#fff">
-            3.계절 :
-          </Text>
-          <TypeSelector
-            options={Object.values(SeasonEnum)}
-            selected={formState.season || "SPRING"}
-            onSelect={handleSeasonSelect}
-          />
-        </Row>
-        <Row>
-          <Text size={20} weight={900} color="#fff">
-            4.의상 :
-          </Text>
-          <Input
-            name="costume"
-            spellCheck="false"
-            value={formState.costume}
-            onChange={handleChange}
-          />
-        </Row>
-        <Row>
-          <RowWithTattoo>
+    <>
+      <Modal isVisible={isVisible} onClose={closeModal}>
+        <RoleBoxWrapper>
+          <Row>
             <Text size={20} weight={900} color="#fff">
-              5.문신여부 :
+              1.성별 :
+            </Text>
+            <TypeSelector
+              options={["남", "여"]}
+              selected={formState.sex ? "남" : "여"}
+              onSelect={handleGenderSelect}
+            />
+          </Row>
+          <Row>
+            <Text size={20} weight={900} color="#fff">
+              2.나이 :
+            </Text>
+            <NumInput
+              type="number"
+              name="minAge"
+              value={formState.minAge}
+              onChange={handleChange}
+            />
+            <AgeSeparator>~</AgeSeparator>
+            <NumInput
+              type="number"
+              name="maxAge"
+              value={formState.maxAge}
+              onChange={handleChange}
+            />
+          </Row>
+          <Row>
+            <Text size={20} weight={900} color="#fff">
+              3.의상 :
+            </Text>
+            <SubButton
+              width="140px"
+              onClick={() => setIsClothesModalVisible(true)}
+            >
+              {formState.costume.season && formState.costume.etc
+                ? "의상 등록 완료"
+                : "의상 등록"}
+            </SubButton>
+          </Row>
+          <Row>
+            <Text size={20} weight={900} color="#fff">
+              4.문신여부 :
             </Text>
             <TattooContainer>
-              <TattooRow>
-                {Object.keys(tattooNames)
-                  .splice(0, 4)
-                  .map((part, index) => {
-                    const typedPart = part as TattooPart;
-                    return (
-                      <BoxButton
-                        key={index}
-                        onClick={() => handleTattooClick(typedPart)}
-                        isActive={formState.tattoo[typedPart]}
-                      >
-                        {tattooNames[typedPart]}
-                      </BoxButton>
-                    );
-                  })}
-              </TattooRow>
-              <TattooRow>
-                {Object.keys(tattooNames)
-                  .splice(4, 8)
-                  .map((part, index) => {
-                    const typedPart = part as TattooPart;
-                    return (
-                      <BoxButton
-                        key={index}
-                        onClick={() => handleTattooClick(typedPart)}
-                        isActive={formState.tattoo[typedPart]}
-                      >
-                        {tattooNames[typedPart]}
-                      </BoxButton>
-                    );
-                  })}
-              </TattooRow>
+              {renderTattooRow(0, 4)}
+              {renderTattooRow(4, 8)}
             </TattooContainer>
-          </RowWithTattoo>
-        </Row>
-        <Row>
-          <Text size={20} weight={900} color="#fff">
-            6.기타사항 :
-          </Text>
-          <Input
-            name="etc"
-            spellCheck="false"
-            value={formState.etc}
-            onChange={handleChange}
-          />
-        </Row>
-        <Row>
-          <Text size={20} weight={900} color="#fff">
-            7.인원 :
-          </Text>
-          <NumInput
-            type="number"
-            name="limit_personnal"
-            value={formState.limit_personnal}
-            onChange={handleChange}
-          />
-        </Row>
-      </RoleBoxWrapper>
-      <MainButton isActive={isFormValid} onClick={handleSubmit}>
-        확인
-      </MainButton>
-    </Modal>
+          </Row>
+          <Row>
+            <Text size={20} weight={900} color="#fff">
+              5.인원 :
+            </Text>
+            <NumInput
+              type="number"
+              name="limitPersonnel"
+              value={formState.limitPersonnel}
+              onChange={handleChange}
+            />
+          </Row>
+        </RoleBoxWrapper>
+        <MainButton isActive={isFormValid} onClick={handleSubmit}>
+          확인
+        </MainButton>
+      </Modal>
+      {isClothesModalVisible && (
+        <CompanyClothesModal
+          isVisible={isClothesModalVisible}
+          closeModal={() => setIsClothesModalVisible(false)}
+          onSubmit={handleClothesSubmit}
+          roleName={formState.roleName}
+          initialCostume={formState.costume}
+        />
+      )}
+    </>
   );
 }
 
@@ -259,25 +224,6 @@ const Row = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  flex-wrap: nowrap;
-`;
-
-const RowWithTattoo = styled.div`
-  display: flex;
-  align-items: flex-start;
-`;
-
-const Input = styled.input`
-  flex: 1;
-  min-width: 0;
-  background: transparent;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 900;
-  border: none;
-  outline: none;
-  padding: 5px;
-  margin: 0 10px;
 `;
 
 const NumInput = styled.input`
@@ -291,13 +237,13 @@ const NumInput = styled.input`
   border: none;
   outline: none;
   padding: 5px;
+  margin: 5px 0;
 `;
 
 const AgeSeparator = styled.div`
   color: #fff;
   font-size: 20px;
   font-weight: 900;
-  margin-left: -12px;
 `;
 
 const TattooContainer = styled.div`

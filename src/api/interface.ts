@@ -85,14 +85,31 @@ export type RoleListToShow = RoleItemToShow[];
 export type RoleBodyType = {
   id: number;
   roleName: string;
-  costume: string;
+  costume: Costume;
   sex: boolean;
   minAge: string;
   maxAge: string;
   limitPersonnel: number;
   currentPersonnel: number;
-  season: string;
   tattoo: Tattoo;
+};
+
+export type Costume = {
+  roleName: string;
+  season: string;
+  etc: string;
+  imageSrc: string[];
+};
+
+export const TattooNames: Record<keyof Tattoo, string> = {
+  face: "얼굴",
+  chest: "가슴",
+  arm: "팔",
+  leg: "다리",
+  shoulder: "어깨",
+  back: "등",
+  hand: "손",
+  feet: "발",
 };
 
 /**
