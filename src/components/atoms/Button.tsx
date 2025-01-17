@@ -21,6 +21,10 @@ interface HistoryBackButtonProps {
   onClick?: () => void;
 }
 
+interface HistoryBackButtonProps {
+  onClick?: () => void;
+}
+
 const StyledButton = styled.button`
   margin: 0;
   padding: 0;
